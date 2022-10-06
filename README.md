@@ -7,6 +7,6 @@
 
 -Start file client.py #python3 client.py
 
--After launch follow follow the commands in your console
+-After launch follow the commands in your console
 
 -Also you can use CTRL+C for terminates the currently-running program
