@@ -4,7 +4,7 @@ import json
 import time
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.connect(("0.0.0.0", 12345))
+s.connect(("0.0.0.0", 12345)) #adress,port
 
 def task1():
     global thread_stop
