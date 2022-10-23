@@ -3,6 +3,7 @@ import os
 import json
 import threading
 import time
+import sys
 
 def check_file(cid):
     global timestamp
@@ -15,7 +16,7 @@ def check_file(cid):
             for i in data.keys():
                 for k in lastdata.keys():
                     if (i == k) and (data.get(i) != lastdata.get(k)):
-                        stroka += k + " " + "was changed in file of unit" + "\n"
+                        stroka += k + " " + "was changed in file of unit!!!!!!" + "\n"
             print(stroka)
             for c in client_list:
                 connection = c[0]
@@ -66,8 +67,7 @@ def serv_client(sock, cid):
   global client_list
   try:
     while True:
-        time.sleep(0.01)#иначе recive клиента принимает две строки в одну переменную
-        sock.send(("hello! Write \"ok\" to continue or \"quit\" to get out").encode())
+        sock.send(("hello! Write \"ok\" to continue or \"quit\" to get out\n").encode())
         data = sock.recv(1024).decode()
         if data == "quit" or not data:
             thread_stop = True
@@ -82,7 +82,7 @@ def serv_client(sock, cid):
         elif data == "ok":
             main(sock)
         else:
-            sock.send("Wrong command!".encode())
+            sock.send("Wrong command!\n".encode())
   except BrokenPipeError:
     print("Connection with client #%s was lost" %cid)
     print("Client: #%s is out" % cid)
@@ -94,17 +94,15 @@ def serv_client(sock, cid):
 
 def main(sock):
     while True:
-        time.sleep(0.01)#иначе recive клиента принимает две строки в одну переменную
-       	sock.send(("Put the number of function: 1-show, 2-set, 0-exit:").encode())
+       	sock.send(("Put the number of function: 1-show, 2-set, 0-exit:\n").encode())
         number = sock.recv(1024).decode()
         if number == "1":
             unit()
             show(sock)
         elif number == "2":
             while True:
-                time.sleep(0.01)#иначе recive клиента принимает две строки в одну переменную
-                mes = ("\nSelect the values of angles you want to change:" + "\n" + "1-Change angle of back,"
-                + "\n" + "2-Change angle of hip," + "\n" + "3-Change angle of ankle," + "\n" + "0-Back to menu")
+                mes = ("Select the values of angles you want to change:" + "\n" + "1-Change angle of back,"
+                + "\n" + "2-Change angle of hip," + "\n" + "3-Change angle of ankle," + "\n" + "0-Back to menu"+ "\n")
                 sock.send(mes.encode())
                 param = sock.recv(1024).decode()
                 if param == "1":
@@ -117,12 +115,12 @@ def main(sock):
                     print("Backing...")
                     break
                 else:
-                    sock.send(("Not that command!").encode())
+                    sock.send(("Not that command!\n").encode())
         elif number == "0":
             print("Backing...")
             break
         else:
-            sock.send(("Error:Not that function, try again").encode())
+            sock.send(("Error:Not that function, try again\n").encode())
 
 def unit():
     if os.path.isfile('cond.txt'):
@@ -140,8 +138,7 @@ def show(sock):
     for i in data.keys():
         if i != "High":
             base[i] = data.get(i)
-    sock.send(json.dumps(base).encode())
-    # time.sleep(0.0001)
+    sock.send(json.dumps(base).encode()+b"\n")
 
 def save(data):
     global timestamp
@@ -163,60 +160,61 @@ def set_param(sock, param):
         if param == 1:
             for i in data.keys():
                 if i == "Angle_back":
-                    sock.send(("Set the value of \"Angle_back\" (only integer values) [from 0 to 50] :").encode())
+                    sock.send(("Set the value of \"Angle_back\" (only integer values) [from 0 to 50] :\n").encode())
                     value = sock.recv(1024).decode()
                     data[i] = value
                     break
             if int(value) >= 0 and int(value) <= 50:
                 json.dump(data, open('data.json', 'w'))
                 save(data)
-                sock.send(("The value is saved").encode())
+                sock.send(("The value is saved\n").encode())
             else:
-               sock.send(("Wrong value,try again:").encode())
+               sock.send(("Wrong value,try again:\n").encode())
         elif param == 2:
             for i in data.keys():
                 if i == "Angle_hip":
-                    sock.send(("Set the value of \"Angle_hip\" [from -15 to 15] :").encode())
+                    sock.send(("Set the value of \"Angle_hip\" [from -15 to 15] :\n").encode())
                     value = sock.recv(1024).decode()
                     data[i] = value
                     break
             if int(value) >= -15 and int(value) <= 15:
                 json.dump(data, open('data.json', 'w'))
                 save(data)
-                sock.send(("The value is saved").encode())
+                sock.send(("The value is saved\n").encode())
             else:
-               sock.send(("Wrong value,try again:").encode())
+               sock.send(("Wrong value,try again:\n").encode())
         elif param == 3:
             for i in data.keys():
                 if i == "Angle_ankle":
-                    sock.send(("Set the value of \"Angle_ankle\" [from 0 to 30]:").encode())
+                    sock.send(("Set the value of \"Angle_ankle\" [from 0 to 30]:\n").encode())
                     value = sock.recv(1024).decode()
                     data[i] = value
                     break
             if int(value) >= 0 and int(value) <= 30:
                 json.dump(data, open('data.json', 'w'))
                 save(data)
-                sock.send(("The value is saved").encode())
+                sock.send(("The value is saved!!!!\n").encode())
             else:
-               sock.send(("Wrong value,try again:").encode())
+               sock.send(("Wrong value,try again:\n").encode())
       except ValueError:
-      	   sock.send(("Wrong value: float-number,try again").encode())
+      	   sock.send(("Wrong value: float-number,try again\n").encode())
 
 if __name__ == "__main__":
-    tcp_host, tcp_port = "0.0.0.0", 12345
-
+	
+    
+    if len(sys.argv) == 1:
+        tcp_host, tcp_port = "0.0.0.0", 12345 #адрес и порт по умолчанию
+        print(f"host:{tcp_host}",f"port:{tcp_port}",sep = '\n') 
+    elif len(sys.argv) == 3:
+        tcp_host,tcp_port = sys.argv[1],int(sys.argv[2])
+        print(f"host:{tcp_host}",f"port:{tcp_port}",sep = '\n')        
+    else:
+        print("Error host or port (first host then port)")
+        sys.exit()
+    
     try:
         start_server(tcp_host, tcp_port)
+        
         thread_stop = False
     except KeyboardInterrupt:
         print("\nServer end")
-
-
-
-
-
-
-
-
-
-
