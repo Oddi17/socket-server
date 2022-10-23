@@ -24,7 +24,7 @@ def task1():
         if thread_stop == True:
                 print("End of working")
                 break
-        elif not in_data: #or in_data.decode() == "File of unit (\"cond.txt\") not found"
+        elif not in_data:
                 thread_stop = True
                 print("Server was closed, end of working")
                 print("Push the \"Enter\"")
