@@ -1,7 +1,7 @@
 # socket-server
 -Check for the existence of the cond.txt in your directory.This file should be named cond.txt and contain the parameters of your device
 
--Set port in file server.py and file client.py
+-Set the address and port when running the scripts server.py and client.py (first address then port, for example - #0.0.0.0 12345) or just default values will be used
 
 -Start file server.py #python3 server.py
 
