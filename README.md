@@ -16,7 +16,7 @@
 части: имитация взаимодействия (опроса или получения уведомлений) с устройством и
 взаимодействие с клиентами по сети.
 
-
+# Запуск
 
 -Check for the existence of the cond.txt in your directory.This file should be named cond.txt and contain the parameters of your device
 
